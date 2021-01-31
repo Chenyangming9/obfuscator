@@ -1,6 +1,10 @@
-add_llvm_library( LLVMEncodeFunctionName MODULE
+add_llvm_library( LLVMEncodeFunctionName
         EncodeFunctionName.cpp
 
-        PLUGIN_TOOL
-        opt
+        ADDITIONAL_HEADER_DIRS
+        ${LLVM_MAIN_INCLUDE_DIR}/llvm/Transforms
+        ${LLVM_MAIN_INCLUDE_DIR}/llvm/Transforms/LLVMEncodeFunctionName
+
+        DEPENDS
+        intrinsics_gen
         )

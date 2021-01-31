@@ -52,7 +52,7 @@
 #include "llvm/Transforms/Obfuscation/Split.h"
 #include "llvm/Transforms/Obfuscation/Substitution.h"
 #include "llvm/CryptoUtils.h"
-
+#include "llvm/Transforms/EncodeFunctionName/EncodeFunctionName.h"
 
 using namespace llvm;
 
@@ -153,6 +153,10 @@ cl::opt<bool> FlattenedProfileUsed(
 cl::opt<bool> EnableOrderFileInstrumentation(
     "enable-order-file-instrumentation", cl::init(false), cl::Hidden,
     cl::desc("Enable order file instrumentation (default = off)"));
+
+cl::opt<bool> EnableEncodeFunctionName(
+        "enable_encode_function_name", cl::init(false), cl::Hidden,
+        cl::desc("Enable encode function name (default = off)"));
 
 // Flags for obfuscation
 static cl::opt<bool> Flattening("fla", cl::init(false),
@@ -471,6 +475,11 @@ void PassManagerBuilder::populateModulePassManager(
 
   // Allow forcing function attributes as a debugging and tuning aid.
   MPM.add(createForceFunctionAttrsLegacyPass());
+
+  if (EnableEncodeFunctionName){
+      // add EncodeFunctionName pass
+      MPM.add(createEncodeFunctionName());
+  }
 
     MPM.add(createSplitBasicBlock(Split));
     MPM.add(createBogus(BogusControlFlow));
